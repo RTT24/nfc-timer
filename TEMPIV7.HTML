@@ -8,6 +8,7 @@
 <style>html,body{height:100%;}</style>
 </head>
 <body class="bg-gray-100 text-gray-900 h-full" tabindex="0">
+
 <main class="h-full w-full flex flex-col items-center px-4 py-6 select-none">
   <!-- HEADER -->
   <header class="w-full flex items-center justify-between mb-4 max-w-[640px]">
@@ -15,23 +16,27 @@
     <button id="cfgBtn" class="text-3xl text-gray-500 hover:text-gray-900">⚙︎</button>
   </header>
 
-  <!-- MANUAL INPUT (solo per beta-test) -->
+  <!-- INPUT MANUALE • solo per beta-test -->
   <section class="w-full max-w-[640px] mb-4 flex gap-2">
-    <input id="manualInput" placeholder="Incolla URL ordine e premi Invio" class="flex-1 border rounded-lg p-3 text-lg" />
+    <input id="manualInput" placeholder="Incolla URL ordine e premi Invio"
+           class="flex-1 border rounded-lg p-3 text-lg" />
     <button id="manualBtn" class="rounded-xl bg-blue-500 text-white px-4 text-xl">START</button>
   </section>
 
   <!-- TIMER BOX -->
-  <section id="timerBox" class="flex items-center justify-center rounded-2xl w-full max-w-[640px] h-[40vh] bg-white transition-colors">
+  <section id="timerBox"
+           class="flex items-center justify-center rounded-2xl w-full max-w-[640px] h-[40vh] bg-white transition-colors">
     <span id="timer" class="text-[min(20vw,8rem)] font-extrabold leading-none">00:00</span>
   </section>
 
-  <!-- COMMANDS -->
+  <!-- COMMANDI -->
   <section class="w-full max-w-[640px] mt-6 flex flex-col gap-4">
-    <button id="pauseBtn" class="w-full rounded-xl border border-gray-300 py-4 text-2xl font-semibold flex items-center justify-center gap-4 bg-white hover:bg-gray-50 active:scale-95 transition">
+    <button id="pauseBtn"
+            class="w-full rounded-xl border border-gray-300 py-4 text-2xl font-semibold flex items-center justify-center gap-4 bg-white hover:bg-gray-50 active:scale-95 transition">
       <span id="pauseIcon" class="text-3xl">⏸</span><span id="pauseLabel">PAUSA</span>
     </button>
-    <button id="openBtn" disabled class="w-full rounded-xl border border-gray-300 py-4 text-2xl font-semibold flex items-center justify-center gap-3 bg-white hover:bg-gray-50 active:scale-95 transition">
+    <button id="openBtn" disabled
+            class="w-full rounded-xl border border-gray-300 py-4 text-2xl font-semibold flex items-center justify-center gap-3 bg-white hover:bg-gray-50 active:scale-95 transition">
       🔗 <span>APRI INFO ORDINE</span>
     </button>
   </section>
@@ -39,116 +44,157 @@
 
 <!-- CONFIG DIALOG -->
 <dialog id="cfgDlg" class="rounded-2xl shadow-xl backdrop:bg-black/30 w-[90vw] max-w-[480px] p-6">
-<form id="cfgForm" method="dialog" class="space-y-6">
-  <div class="flex items-center justify-between mb-2"><h3 class="text-3xl font-bold">SETUP</h3><button type="button" id="closeCfg" class="text-3xl">✕</button></div>
-  <div><label class="block font-semibold mb-1" for="iOp">NOME OPERATORE</label><input id="iOp" class="w-full border rounded-lg p-3 text-lg"/></div>
-  <div class="grid grid-cols-2 gap-4">
-    <div><label class="block font-semibold mb-1" for="iYellow">SOGLIA GIALLO (min)</label><input id="iYellow" type="number" min="1" class="w-full border rounded-lg p-3 text-lg"/></div>
-    <div><label class="block font-semibold mb-1" for="iRed">SOGLIA ROSSO (min)</label><input id="iRed" type="number" min="1" class="w-full border rounded-lg p-3 text-lg"/></div>
-  </div>
-  <div class="flex items-center gap-3"><input id="iShowColor" type="checkbox" class="h-6 w-6"><label for="iShowColor">Mostra colore di sfondo</label></div>
-  <button id="saveCfg" class="w-full rounded-xl py-3 text-xl font-semibold bg-blue-500 text-white hover:bg-blue-600 active:scale-95 transition">SALVA</button>
-</form>
+  <form id="cfgForm" method="dialog" class="space-y-6">
+    <div class="flex items-center justify-between mb-2">
+      <h3 class="text-3xl font-bold">SETUP</h3>
+      <button type="button" id="closeCfg" class="text-3xl">✕</button>
+    </div>
+    <div>
+      <label class="block font-semibold mb-1" for="iOp">NOME OPERATORE</label>
+      <input id="iOp" class="w-full border rounded-lg p-3 text-lg" />
+    </div>
+    <div class="grid grid-cols-2 gap-4">
+      <div>
+        <label class="block font-semibold mb-1" for="iYellow">SOGLIA GIALLO (min)</label>
+        <input id="iYellow" type="number" min="1" class="w-full border rounded-lg p-3 text-lg" />
+      </div>
+      <div>
+        <label class="block font-semibold mb-1" for="iRed">SOGLIA ROSSO (min)</label>
+        <input id="iRed" type="number" min="1" class="w-full border rounded-lg p-3 text-lg" />
+      </div>
+    </div>
+    <div class="flex items-center gap-3">
+      <input id="iShowColor" type="checkbox" class="h-6 w-6">
+      <label for="iShowColor">Mostra colore di sfondo</label>
+    </div>
+    <button id="saveCfg"
+            class="w-full rounded-xl py-3 text-xl font-semibold bg-blue-500 text-white hover:bg-blue-600 active:scale-95 transition">
+      SALVA
+    </button>
+  </form>
 </dialog>
 
 <script>
-/* ====== CONFIG ====== */
-const cfg={
-  opName  : localStorage.getItem('opName')  ||'OPERATORE',
-  tYellow : +(localStorage.getItem('tYellow')||60),
-  tRed    : +(localStorage.getItem('tRed')   ||80),
-  showColor:localStorage.getItem('showColor')!=='false'
+/* ===== CONFIG ===== */
+const cfg = {
+  opName   : localStorage.getItem('opName')  || 'OPERATORE',
+  tYellow  : +(localStorage.getItem('tYellow') || 60),
+  tRed     : +(localStorage.getItem('tRed')    || 80),
+  showColor:  localStorage.getItem('showColor') !== 'false'
 };
 
-/* Google Apps Script webhook URLs (da configurare) */
-const SHEET_ENDPOINT = 'https://script.google.com/macros/s/AKfycbwEsLueG8dJBU-q5Ij2ZuHI1Iifkxiy_s0zjcFxAfWY4IatVPmnLsuaIayfO3d0MWwrPg/exec';       // log generale
-const ALERT_ENDPOINT  = 'https://script.google.com/macros/s/YYYY/exec';       // superamenti soglia
+/* ===== ENDPOINT Google Sheets ===== */
+const SHEET_ENDPOINT = 'https://script.google.com/macros/s/AKfycbw6LDBgkGxFWHokHum_o99VpQr1Q5aM6kO4jfU9OM2IbGADYdGzdzPhh--YpDcHL0G1KQ/exec';
+const ALERT_ENDPOINT = '';   // se in futuro userai un endpoint alert separato
 
-/* ====== DOM ====== */
-const opNameEl = document.getElementById('opName');
-const timerEl  = document.getElementById('timer');
-const boxEl    = document.getElementById('timerBox');
-const pauseBtn = document.getElementById('pauseBtn');
-const openBtn  = document.getElementById('openBtn');
-const manualIn = document.getElementById('manualInput');
-const manualBtn= document.getElementById('manualBtn');
+/* ===== DOM HOOKS ===== */
+const opNameEl   = document.getElementById('opName');
+const timerEl    = document.getElementById('timer');
+const boxEl      = document.getElementById('timerBox');
+const pauseBtn   = document.getElementById('pauseBtn');
+const openBtn    = document.getElementById('openBtn');
+const manualIn   = document.getElementById('manualInput');
+const manualBtn  = document.getElementById('manualBtn');
 
-/* ====== STATE ====== */
-let running=false,startTs=0,tickId=null,currentUrl='',sessionStart='';
+/* ===== STATE ===== */
+let running=false, startTs=0, tickId=null, currentUrl='', sessionStart='';
 
-/* UTILS */
-const fmt=s=>`${String(s/60|0).padStart(2,'0')}:${String(s%60).padStart(2,'0')}`;
-function colour(sec){
-  const m=sec/60;
-  return cfg.showColor?(m>=cfg.tRed?'bg-red-500':m>=cfg.tYellow?'bg-yellow-400':'bg-green-500'):'bg-white';
-}
-function updateBox(sec){ boxEl.className=boxEl.className.replace(/bg-[^ ]+/g,colour(sec)); }
+/* ===== UTILS ===== */
+const fmt = s => `${String(s/60|0).padStart(2,'0')}:${String(s%60).padStart(2,'0')}`;
+const colour = sec => cfg.showColor
+  ? ((sec/60)>=cfg.tRed ? 'bg-red-500' : (sec/60)>=cfg.tYellow ? 'bg-yellow-400' : 'bg-green-500')
+  : 'bg-white';
+const qs = o => Object.entries(o).map(([k,v]) => encodeURIComponent(k)+'='+encodeURIComponent(v)).join('&');
+function updateBox(sec){ boxEl.className = boxEl.className.replace(/bg-[^ ]+/g, colour(sec)); }
 
-/* TIMER */
+/* ===== TIMER ===== */
 function tick(){
-  const s=((Date.now()-startTs)/1000)|0;
-  timerEl.textContent=fmt(s);
+  const s = ((Date.now()-startTs)/1e3)|0;
+  timerEl.textContent = fmt(s);
   updateBox(s);
-  tickId=setTimeout(tick,1000);
+  tickId = setTimeout(tick, 1e3);
 }
 function start(url){
-  currentUrl=url; openBtn.disabled=false;
-  running=true; startTs=Date.now(); sessionStart=new Date().toISOString();
-  pauseBtn.dataset.state='run'; document.getElementById('pauseIcon').textContent='⏸'; document.getElementById('pauseLabel').textContent='PAUSA';
+  currentUrl = url;
+  openBtn.disabled = false;
+  running = true;
+  startTs = Date.now();
+  sessionStart = new Date().toISOString();
+  updatePauseBtn();
   tick();
 }
-function pause(){ running=false; clearTimeout(tickId); document.getElementById('pauseIcon').textContent='▶'; document.getElementById('pauseLabel').textContent='AVVIA'; }
-function resume(){ const elapsed=parseDisplay(); startTs=Date.now()-elapsed*1000; running=true; document.getElementById('pauseIcon').textContent='⏸'; document.getElementById('pauseLabel').textContent='PAUSA'; tick(); }
-function stop(){
-  const endTs=new Date().toISOString();
-  const duration=Math.round((Date.now()-startTs)/60000); // minuti
-  pause(); timerEl.textContent='00:00'; updateBox(0);
-  logSession({operatore:cfg.opName,url:currentUrl,start:sessionStart,end:endTs,dur:duration});
-  if(duration>=cfg.tRed) sendAlert({operatore:cfg.opName,url:currentUrl,dur:duration});
+function pause(){ running=false; clearTimeout(tickId); updatePauseBtn(); }
+function resume(){
+  const parts = timerEl.textContent.split(':').map(Number);
+  startTs = Date.now() - (parts[0]*60 + parts[1])*1000;
+  running = true;
+  updatePauseBtn();
+  tick();
 }
-function parseDisplay(){const[m,s]=timerEl.textContent.split(':').map(Number);return m*60+s;}
+function stop(){
+  if(!running) return;
+  const endIso = new Date().toISOString();
+  const dur = Math.round((Date.now()-startTs)/60000);
+  pause();
+  timerEl.textContent = '00:00';
+  updateBox(0);
+  logSession({operatore:cfg.opName,url:currentUrl,start:sessionStart,end:endIso,dur});
+  if(dur>=cfg.tRed) sendAlert({operatore:cfg.opName,url:currentUrl,dur});
+}
+function updatePauseBtn(){
+  document.getElementById('pauseIcon').textContent = running ? '⏸' : '▶';
+  document.getElementById('pauseLabel').textContent = running ? 'PAUSA' : 'AVVIA';
+}
 
-pauseBtn.onclick=()=> running?pause():resume();
-openBtn.onclick=()=> currentUrl&&window.open(currentUrl,'_blank');
-
-/* ===== LOGGING ===== */
-async function logSession(obj){
-  try{
-    await fetch(SHEET_ENDPOINT,{
-      method:'POST',
-      mode:'no-cors',                       // evita blocco CORS in browser
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify(obj)
-    });
-    console.log('✔ sessione inviata',obj);
-  }catch(e){console.error('logSession',e);} }
-async function sendAlert(obj){
+/* ===== SHEETS ===== */
+function logSession(obj){
+  fetch(SHEET_ENDPOINT + '?' + qs(obj), { method:'GET', mode:'no-cors' })
+    .then(()=>console.log('✔ log inviato', obj))
+    .catch(console.error);
+}
+function sendAlert(obj){
   if(!ALERT_ENDPOINT) return;
-  try{
-    await fetch(ALERT_ENDPOINT,{
-      method:'POST',
-      mode:'no-cors',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify(obj)
-    });
-    console.log('⚠️ alert inviato',obj);
-  }catch(e){console.error('sendAlert',e);} }
+  fetch(ALERT_ENDPOINT + '?' + qs(obj), { method:'GET', mode:'no-cors' });
+}
 
-/* ===== MANUAL INPUT (per beta) ===== */
+/* ===== MANUAL INPUT (beta) ===== */
 function handleManual(){
-  const url=manualIn.value.trim();
+  const url = manualIn.value.trim();
   if(!url) return;
   if(running) stop();
-  start(url); manualIn.value='';
+  start(url);
+  manualIn.value = '';
 }
-manualBtn.onclick=handleManual;
-manualIn.addEventListener('keydown',e=>{ if(e.key==='Enter'){ e.preventDefault(); handleManual(); } });
+manualBtn.onclick = handleManual;
+manualIn.addEventListener('keydown', e => {
+  if(e.key==='Enter'){ e.preventDefault(); handleManual(); }
+});
+
+/* ===== BUTTONS ===== */
+pauseBtn.onclick = () => running ? pause() : resume();
+openBtn.onclick  = () => currentUrl && window.open(currentUrl,'_blank');
 
 /* ===== CONFIG DIALOG ===== */
-const cfgDlg=document.getElementById('cfgDlg');
-document.getElementById('cfgBtn').onclick=()=>{ iOp.value=cfg.opName;iYellow.value=cfg.tYellow;iRed.value=cfg.tRed;iShowColor.checked=cfg.showColor;cfgDlg.showModal(); };
-closeCfg.onclick=()=>cfgDlg.close();
-saveCfg.onclick=e=>{ e.preventDefault(); cfg.opName=iOp.value.trim()||'OPERATORE'; cfg.tYellow=+iYellow.value||60; cfg.tRed=+iRed.value||80; cfg.showColor=iShowColor.checked; ['opName','tYellow','tRed','showColor'].forEach(k=>localStorage.setItem(k,cfg[k])); opNameEl.textContent=cfg.opName; if(running) updateBox(((Date.now()-startTs)/1000)|0); cfgDlg.close(); };
+const cfgDlg = document.getElementById('cfgDlg');
+document.getElementById('cfgBtn').onclick = ()=>{
+  iOp.value = cfg.opName;
+  iYellow.value = cfg.tYellow;
+  iRed.value = cfg.tRed;
+  iShowColor.checked = cfg.showColor;
+  cfgDlg.showModal();
+};
+closeCfg.onclick = ()=> cfgDlg.close();
+saveCfg.onclick = e=>{
+  e.preventDefault();
+  cfg.opName   = iOp.value.trim() || 'OPERATORE';
+  cfg.tYellow  = +iYellow.value || 60;
+  cfg.tRed     = +iRed.value    || 80;
+  cfg.showColor= iShowColor.checked;
+  ['opName','tYellow','tRed','showColor'].forEach(k=>localStorage.setItem(k,cfg[k]));
+  opNameEl.textContent = cfg.opName;
+  if(running) updateBox(((Date.now()-startTs)/1e3)|0);
+  cfgDlg.close();
+};
 
 /* ===== INITIAL ===== */
 updateBox(0);
